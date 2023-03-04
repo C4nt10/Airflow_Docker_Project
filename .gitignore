@@ -1,8 +1,7 @@
-.log
-.lock
-.tmp
+*.log
+*.lock
+*.tmp
 /bin
 /out
 /target
-/logs
 /proxy_rev
