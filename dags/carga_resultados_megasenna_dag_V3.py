@@ -334,11 +334,11 @@ with DAG(
         provide_context=True
     )
 
-    gameday_check >> Verificar_api >> carrega_ultimo_jogo >> SalvaUltimoJogo >> AvaliaJogosNaoSalvos
+    Label("Verifica se é Dia de Jogo") >> gameday_check >> Label("Verificar se o Serviço está respondendo") >> Verificar_api >> Label("Carrega o Ultimo Jogo") >> carrega_ultimo_jogo >> Label("Salva o Ultimo Jogo") >> SalvaUltimoJogo >> Label("Avalia se existe algum Jogo que ainda não foi carregado") >> AvaliaJogosNaoSalvos
     
-    gameday_check >> ending_process
-    AvaliaJogosNaoSalvos >> reindex_convert_dataframe
-    AvaliaJogosNaoSalvos >> ending_process
+    gameday_check >> Label("Serviço Não Responde") >> ending_process
+    AvaliaJogosNaoSalvos >> Label("Formata Arquivos de Saída") >> reindex_convert_dataframe
+    AvaliaJogosNaoSalvos >> Label("Carga Concluída") >> ending_process
 
     for chunckid in range(1,int(chuncks_num)+1):
         SalvaJogos = PythonOperator(
@@ -348,4 +348,4 @@ with DAG(
             op_kwargs={'chunck': int(chunckid)}
         )
 
-        AvaliaJogosNaoSalvos >> connectorOperator >> SalvaJogos >> merge_chunckes >> reindex_convert_dataframe >> ending_process    
+        AvaliaJogosNaoSalvos >> Label("Carrega Jogos MultiThreading") >> connectorOperator >> Label("Carrega Jogos") >>  SalvaJogos >> Label("Uni os arquivos de cargas parciais") >> merge_chunckes >> Label("Formata Arquivos de Saída") >> reindex_convert_dataframe >> Label("Carga Concluída") >> ending_process
