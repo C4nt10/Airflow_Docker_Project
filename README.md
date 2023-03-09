@@ -13,3 +13,6 @@ To accomplish this I teste:
 * Some Airflow Operators and Configurations
 * Pandas
 * Numpy
+
+
+![image](https://user-images.githubusercontent.com/6619304/223903451-b3583179-1356-4299-b635-e77da0d44bca.png)
